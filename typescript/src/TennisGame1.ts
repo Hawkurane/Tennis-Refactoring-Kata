@@ -13,59 +13,39 @@ export class TennisGame1 implements TennisGame {
   }
 
   wonPoint(playerName: string): void {
-    if (playerName === 'player1')
-      this.m_score1 += 1;
-    else
-      this.m_score2 += 1;
+    if (playerName === this.player1Name) this.m_score1 += 1;
+    if (playerName === this.player2Name) this.m_score2 += 1;
   }
 
   getScore(): string {
-    let score: string = '';
-    let tempScore: number = 0;
-    if (this.m_score1 === this.m_score2) {
-      switch (this.m_score1) {
-        case 0:
-          score = 'Love-All';
-          break;
-        case 1:
-          score = 'Fifteen-All';
-          break;
-        case 2:
-          score = 'Thirty-All';
-          break;
-        default:
-          score = 'Deuce';
-          break;
+    if (this.m_score1 === this.m_score2) 
+      return this.getScoreNameForEqualScores(this.m_score1);
+    else if (this.m_score1 >= 4 || this.m_score2 >= 4) 
+     return this.getScoreNameForMatchPoints(this.m_score1, this.m_score2);
+    else
+      return this.getScoreNameForNumber(this.m_score1) + '-' + this.getScoreNameForNumber(this.m_score2);
+  }
 
-      }
-    }
-    else if (this.m_score1 >= 4 || this.m_score2 >= 4) {
-      const minusResult: number = this.m_score1 - this.m_score2;
-      if (minusResult === 1) score = 'Advantage player1';
-      else if (minusResult === -1) score = 'Advantage player2';
-      else if (minusResult >= 2) score = 'Win for player1';
-      else score = 'Win for player2';
-    }
-    else {
-      for (let i = 1; i < 3; i++) {
-        if (i === 1) tempScore = this.m_score1;
-        else { score += '-'; tempScore = this.m_score2; }
-        switch (tempScore) {
-          case 0:
-            score += 'Love';
-            break;
-          case 1:
-            score += 'Fifteen';
-            break;
-          case 2:
-            score += 'Thirty';
-            break;
-          case 3:
-            score += 'Forty';
-            break;
-        }
-      }
-    }
-    return score;
+  private getScoreNameForNumber(score: number) {
+    if(score === 0) return 'Love';
+    if(score === 1) return 'Fifteen';
+    if(score === 2) return 'Thirty';
+    if(score === 3) return 'Forty';
+    return 'ERROR';
+  }
+
+  private getScoreNameForMatchPoints(scorePlayer1: number, scorePlayer2: number) {
+    const minusResult: number = scorePlayer1 - scorePlayer2;
+    if (minusResult === 1) return 'Advantage player1';
+    else if (minusResult === -1) return 'Advantage player2';
+    else if (minusResult >= 2) return 'Win for player1';
+    else return 'Win for player2';
+  }
+
+  private getScoreNameForEqualScores(score: number): string {
+    if(score === 0) return 'Love-All';
+    if(score === 1) return 'Fifteen-All';
+    if(score === 2) return 'Thirty-All';
+    return 'Deuce';
   }
 }
