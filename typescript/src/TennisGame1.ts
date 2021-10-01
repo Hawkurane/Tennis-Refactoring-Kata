@@ -2,31 +2,32 @@ import { TennisGame } from './TennisGame';
 
 
 export class TennisGame1 implements TennisGame {
-  private m_score1: number = 0;
-  private m_score2: number = 0;
-  private player1Name: string;
-  private player2Name: string;
-
-  constructor(player1Name: string, player2Name: string) {
-    this.player1Name = player1Name;
-    this.player2Name = player2Name;
+  constructor(
+    private player1Name: string,
+    private player2Name: string,
+    private m_score1: number = 0,
+    private m_score2: number = 0) {
   }
 
   wonPoint(playerName: string): void {
-    if (playerName === this.player1Name) this.m_score1 += 1;
-    if (playerName === this.player2Name) this.m_score2 += 1;
+    if (playerName === this.player1Name) this.m_score1++;
+    if (playerName === this.player2Name) this.m_score2++;
   }
 
   getScore(): string {
     if (this.m_score1 === this.m_score2) 
       return this.getScoreNameForEqualScores(this.m_score1);
     else if (this.m_score1 >= 4 || this.m_score2 >= 4) 
-     return this.getScoreNameForMatchPoints(this.m_score1, this.m_score2);
+     return this.getScoreNameForNonEqualMatchPoints(this.m_score1, this.m_score2);
     else
-      return this.getScoreNameForNumber(this.m_score1) + '-' + this.getScoreNameForNumber(this.m_score2);
+      return this.getScoreForNonEqualNorMatchPoints(this.m_score1, this.m_score2);  
   }
 
-  private getScoreNameForNumber(score: number) {
+  private getScoreForNonEqualNorMatchPoints(scorePlayer1: number, scorePlayer2: number){
+    return this.getNumberAsScoreName(scorePlayer1) + '-' + this.getNumberAsScoreName(scorePlayer2);
+  }
+
+  private getNumberAsScoreName(score: number): string {
     if(score === 0) return 'Love';
     if(score === 1) return 'Fifteen';
     if(score === 2) return 'Thirty';
@@ -34,7 +35,7 @@ export class TennisGame1 implements TennisGame {
     return 'ERROR';
   }
 
-  private getScoreNameForMatchPoints(scorePlayer1: number, scorePlayer2: number) {
+  private getScoreNameForNonEqualMatchPoints(scorePlayer1: number, scorePlayer2: number): string {
     const minusResult: number = scorePlayer1 - scorePlayer2;
     if (minusResult === 1) return 'Advantage player1';
     else if (minusResult === -1) return 'Advantage player2';
