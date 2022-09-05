@@ -1,36 +1,46 @@
-import { TennisGame } from './TennisGame';
-
+import { TennisGame } from "./TennisGame";
 
 export class TennisGame3 implements TennisGame {
-  private p2: number = 0;
-  private p1: number = 0;
-  private p1N: string;
-  private p2N: string;
+  private p1Score: number = 0;
+  private p2Score: number = 0;
+  private p1Name: string;
+  private p2Name: string;
 
-  constructor(p1N: string, p2N: string) {
-    this.p1N = p1N;
-    this.p2N = p2N;
+  constructor(p1Name: string, p2Name: string) {
+    this.p1Name = p1Name;
+    this.p2Name = p2Name;
   }
 
   getScore(): string {
-    let s: string;
-    if (this.p1 < 4 && this.p2 < 4 && !(this.p1 + this.p2 === 6)) {
-      const p: string[] = ['Love', 'Fifteen', 'Thirty', 'Forty'];
-      s = p[this.p1];
-      return (this.p1 === this.p2) ? s + '-All' : s + '-' + p[this.p2];
+    if (this.isNotMatchPoint(this.p1Score, this.p2Score)) {
+      return this.getPlayer1ScoreName(this.p1Score) + "-" + this.getPlayer2ScoreName(this.p1Score, this.p2Score);
     } else {
-      if (this.p1 === this.p2)
-        return 'Deuce';
-      s = this.p1 > this.p2 ? this.p1N : this.p2N;
-      return (((this.p1 - this.p2) * (this.p1 - this.p2)) === 1) ? 'Advantage ' + s : 'Win for ' + s;
+      if (this.p1Score === this.p2Score) return "Deuce";
+      let winningPlayerName: string = this.p1Score > this.p2Score ? this.p1Name : this.p2Name;
+      return this.getScoreForWinOrAdvantage(this.p1Score, this.p2Score) + winningPlayerName
     }
   }
 
-  wonPoint(playerName: string): void {
-    if (playerName === 'player1')
-      this.p1 += 1;
-    else
-      this.p2 += 1;
+  private getScoreForWinOrAdvantage(p1Score: number, p2Score: number): string {
+    if((p1Score - p2Score) * (p1Score - p2Score) === 1) return 'Advantage '
+    return 'Win for '
+  }
 
+  private getPlayer1ScoreName(p1Score: number): string {
+    return ["Love", "Fifteen", "Thirty", "Forty"][p1Score];
+  }
+
+  private getPlayer2ScoreName(p1Score: number, p2Score: number): string {
+    if (p1Score === p2Score) return "All";
+    return ["Love", "Fifteen", "Thirty", "Forty"][p2Score];
+  }
+
+  private isNotMatchPoint(p1Score: number, p2Score: number): boolean {
+    return p1Score < 4 && p2Score < 4 && !(p1Score + p2Score === 6);
+  }
+
+  wonPoint(playerName: string): void {
+    if (playerName === "player1") this.p1Score += 1;
+    else this.p2Score += 1;
   }
 }
